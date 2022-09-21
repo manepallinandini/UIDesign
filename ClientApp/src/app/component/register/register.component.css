@@ -1,0 +1,27 @@
+mat-card {
+  max-width: 600px;
+  margin: 2px;
+  min-height: 400px;
+  align-self: center
+}
+
+.header {
+  text-align: center;
+}
+
+.full-width {
+  width: 80%;
+}
+
+.user-input {
+  padding-top: 10px
+}
+
+.forgot-password {
+  padding-left: 0px;
+}
+
+.aLink {
+  float: right;
+  padding-right: 60px;
+}
