@@ -15,37 +15,63 @@ export class LoginComponent implements OnInit {
   user: IUser | any;
   accessToken: string | any;
   retVal: string = '';
-
+  public Status: boolean | any;
 
   constructor(private fb: FormBuilder, private api: ApiService, private router: Router, private http: HttpClient,
     @Inject('BASE_URL') private baseUrl: string, private activatedroute: ActivatedRoute) { }
 
   ngOnInit(): void {
-    console.log(this.baseUrl);
-    const username = this.activatedroute.snapshot.paramMap.get('username');
 
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', [Validators.required, Validators.minLength(5)]]
+      username: [''],
+      email: 'sdk@gmail.com',
+      phone: '895956',
+      password: [''],
+      appcode:'bwbjw'
     });
-    this.user = { username: username ? username : null, password: null };
 
-    this.loginForm.patchValue({
-      username: username ? username : '',
-      password: ''
-    });
     this.accessToken = '';
   }
 
 
-  mapFormValuesToModel() {
-    this.user.username = this.loginForm.get('username').value;
-    this.user.password = this.loginForm.get('password').value;
-  }
-
 
   onLoginClick() {
-    console.log(this.loginForm.value);
+    console.log("Testing for logging")
+    this.http.post<string>(this.baseUrl + 'home/login', this.loginForm.value).subscribe((r) => {
+      this.Status = r; console.log(r);
+      this.retVal = r;
+
+      if (r != null) {
+        this.accessToken = JSON.stringify(r[0]);
+        console.log("retVal[0] :" + this.accessToken);
+      }
+
+
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*console.log(this.loginForm.value);
 
     this.mapFormValuesToModel();
     console.log(this.user);
@@ -71,7 +97,7 @@ export class LoginComponent implements OnInit {
         this.api.login(this.accessToken, JSON.stringify(result[1]), this.user.username);
 
       }
-    }, error => console.log(error));
+    }, error => console.log(error));*/
 
           /*this.http.get<any>("http://localhost:5222/api/Register").subscribe(res => {
             const user = res.find((a: any) => {
@@ -93,7 +119,6 @@ export class LoginComponent implements OnInit {
             alert("Servr error")
           })*/
 
-  }
 
 
 
@@ -113,4 +138,3 @@ export class LoginComponent implements OnInit {
   this.api.isLogin.next(true);
   this.router.navigate(['products']);
   console.log(this.loginForm.value);*/
-}
