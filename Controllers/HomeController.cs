@@ -53,24 +53,41 @@ namespace UIDesign.Controllers
             return status;
         }
 
-        [Route("LoginUser")]
+        
         [HttpPost]
-        public async Task<string> LoginUser([FromBody] UIDesign.Models.User u)
+        [Route("login")]
+        public async Task<string> login([FromBody] User u)
         {
             string[] rVal = await _apis.LoginAsync(u.username, u.password);
-            if (rVal != null)
-            {
-                HttpContext.Session.SetString("username", u.username);
-                HttpContext.Session.SetString("AccessToken", rVal[0]);
-                HttpContext.Session.SetString("AccessTokenExpirationDate", rVal[1]);
-                return JsonConvert.SerializeObject(rVal);
-            }
-            else
-            {
-                return null;
-            }
+                if (rVal != null)
+    {
+        HttpContext.Session.SetString("username", u.username);
+        HttpContext.Session.SetString("AccessToken", rVal[0]);
+        HttpContext.Session.SetString("AccessTokenExpirationDate", rVal[1]);
+        return JsonConvert.SerializeObject(rVal);
+    }
+    else
+    {
+        return null;
+    }
         }
 
     }
 
 }
+
+
+/*{
+    string[] rVal = await _apis.LoginAsync(u.username, u.password);
+    if (rVal != null)
+    {
+        HttpContext.Session.SetString("username", u.username);
+        HttpContext.Session.SetString("AccessToken", rVal[0]);
+        HttpContext.Session.SetString("AccessTokenExpirationDate", rVal[1]);
+        return JsonConvert.SerializeObject(rVal);
+    }
+    else
+    {
+        return null;
+    }
+}*/
