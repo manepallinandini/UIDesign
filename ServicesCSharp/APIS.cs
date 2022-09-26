@@ -59,7 +59,6 @@ namespace UIDesign.ServicesCSharp
                     password = password,
 
                     appcode = "registerConn"
-                    // ConfirmPassword = confirmPassword
                 };
 
 
@@ -68,61 +67,28 @@ namespace UIDesign.ServicesCSharp
                 client.DefaultRequestHeaders.Accept.Clear();
                 string serializedObject = JsonConvert.SerializeObject(model);
                 HttpContent contentPost = new StringContent(serializedObject, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync("Login", contentPost);
+                var response = await client.PostAsync("auth/login", contentPost);
 
                 //*****************************************************************************************************************888
 
                 // var response = await client.SendAsync(request);
                 if (response.IsSuccessStatusCode)
                 {
-
                     var content = await response.Content.ReadAsStringAsync();
                     var handler = new JwtSecurityTokenHandler();
-
-                    //JObject jwtDynamic = JsonConvert.DeserializeObject<dynamic>(content);
-                    //jwtdecode()
                     JToken jwtDynamic = JsonConvert.DeserializeObject<dynamic>(content);
-                    // j.Value
-
-                    String[] accessToken = new String[] { "", "", "" };
+                    string[] accessToken = new string[] { "", "", "" };
                     accessToken[0] = jwtDynamic.Value<string>("auth_token");
-
-
-
                     var token = handler.ReadJwtToken(accessToken[0]);
-
-
-                    //    IJwtValidator _validator = new JwtValidator(_serializer, _provider);
-                    //  IJwtDecoder decoder = new JwtDecoder(_serializer, _validator, _urlEncoder, _algorithm);
-                    //   var token1 = decoder.DecodeToObject<JwtToken>(accessToken);
-                    //   DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(token1.exp);
-
-                    //var accessTokenExpiration = token.ValidTo.ToUniversalTime();//jwtDynamic.Value<DateTime>(".exp");
-                    //var accessTokenExpiration = dateTimeOffset.LocalDateTime;
-                    //////////////////////handler.ValidateToken(token)
-
                     var accessTokenExpiration = TimeZoneInfo.ConvertTimeFromUtc(token.ValidTo, TimeZoneInfo.FindSystemTimeZoneById("India Standard Time"));
                     accessToken[1] = accessTokenExpiration.ToString();
                     _contextAccessor.HttpContext.Session.SetString("AccessTokenExpirationDate", accessTokenExpiration.ToString());
-
-                    accessToken[2] = jwtDynamic.Value<string>("user_roleId");
-
-
                     return accessToken;
                 }
-                else
-                {
-                    return null;
-                }
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-            finally
-            {
-
-            }
+                else { return null; }
+            } // Closing try block
+            catch (Exception ex) { return null; }
+            finally { }
         }
     }
 }
